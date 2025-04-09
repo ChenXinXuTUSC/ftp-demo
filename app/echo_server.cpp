@@ -1,14 +1,13 @@
 #include "common.h"
 #include "utils/logger.h"
 #include "utils/sendrecv_msg.h"
+#include "utils/tools.h"
 
 #include "gate.h"
 
 void echo(int sock);
 
-// global object constructor run before main
-init __init__;
-
+init __init__; // global object constructor run before main
 int main(int argc, char** argv)
 {
     std::vector<std::thread> workers;
@@ -25,7 +24,8 @@ int main(int argc, char** argv)
     gg.stop_listen();
 
     for (auto& t : workers)
-        t.join();
+        if (t.joinable())
+            t.join();
     
     return 0;
 }
@@ -37,7 +37,7 @@ void echo(int sock)
         std::cout << "echo >>> ";
         std::string msg = recv_msg(sock);
         std::cout << msg << std::endl;
-        if (msg == "exit" || msg == "quit")
+        if (string_tolower(msg) == "exit" || string_tolower(msg) == "quit")
             break;
         send_msg(sock, msg);
     }

@@ -28,6 +28,7 @@ private:
     struct sockaddr_in gate_addr;
 
     std::mutex mu_q;
+    std::condition_variable cv_q;
     std::queue<int> q_sock;
 
     std::thread thd;

@@ -17,6 +17,7 @@
 
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 
 #include <random>
 #include <ctime>
@@ -27,13 +28,14 @@ void my_terminate_handler();
 class init
 {
 public:
+    // init will run before main
     init()
     {
         // random seed initialization
         srand((unsigned int)time(NULL));
 
         // handle uncatched exceptions
-        std::set_terminate(my_terminate_handler);
+        // std::set_terminate(my_terminate_handler);
     }
 };
 

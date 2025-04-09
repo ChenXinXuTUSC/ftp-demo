@@ -28,14 +28,10 @@ gate::~gate()
 
 int gate::pick_conn()
 {
-    std::lock_guard<std::mutex> lock(mu_q);
-
-    if (q_sock.size() == 0)
-    {
-        WARN("empty accepted socket queue");
-        return -1;
-    }
+    std::unique_lock<std::mutex> lock(mu_q);
+    cv_q.wait(lock, [this] { return this->q_sock.size() > 0; });
     int clnt_sock = q_sock.front(); q_sock.pop();
+    lock.unlock();
     return clnt_sock;
 }
 
@@ -52,6 +48,11 @@ void gate::stop_listen()
     gate_sock = -1;
     if (thd.joinable())
         thd.join();
+    
+    // 如果主线程还在等待下一个可用连接，则放一个非法连接表示监听 socket 已经结束
+    while (!q_sock.empty()) q_sock.pop();
+    q_sock.push(-1);
+    cv_q.notify_one();
 }
 
 
@@ -117,8 +118,10 @@ void gate::loop()
         INFO("accept clnt_sock", clnt_sock, "from", std::string(ipv4_addr));
 
         {
-            std::lock_guard<std::mutex> lock(mu_q);
+            std::unique_lock<std::mutex> lock(mu_q);
             q_sock.push(clnt_sock);
+            lock.unlock();
+            cv_q.notify_one();
         }
     }
 }
