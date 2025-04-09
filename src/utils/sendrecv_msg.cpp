@@ -78,7 +78,8 @@ std::string recv_msg(int sock_fd)
 
     if (bytes_rx_t != sizeof(msg_len))
     {
-        ERRO("failed to recv msg len", std::string(strerror(errno)));
+        if (bytes_rx_c < 0)
+            ERRO("failed to recv msg len", std::string(strerror(errno)));
         return "";
     }
 

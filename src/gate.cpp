@@ -31,7 +31,6 @@ int gate::pick_conn()
     std::unique_lock<std::mutex> lock(mu_q);
     cv_q.wait(lock, [this] { return this->q_sock.size() > 0; });
     int clnt_sock = q_sock.front(); q_sock.pop();
-    lock.unlock();
     return clnt_sock;
 }
 
@@ -115,12 +114,13 @@ void gate::loop()
                 ERRO("failed to accept:"+std::string(strerror(errno)));
             break;
         }
-        INFO("accept clnt_sock", clnt_sock, "from", std::string(ipv4_addr));
-
         {
-            std::unique_lock<std::mutex> lock(mu_q);
+            // 不应该先解锁再使用信号唤醒阻塞在条件变量上的线程
+            // 条件变量阻塞和锁阻塞是两个队列，先解锁可能导致阻
+            // 塞在锁上的其他线程被意外调度运行
+            std::lock_guard<std::mutex> lock(mu_q);
             q_sock.push(clnt_sock);
-            lock.unlock();
+            INFO("accept clnt_sock", clnt_sock, "from", std::string(ipv4_addr));
             cv_q.notify_one();
         }
     }

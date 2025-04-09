@@ -34,11 +34,14 @@ void echo(int sock)
 {
     while (true)
     {
-        std::cout << "echo >>> ";
+        printf("echo[%d] >>> ", sock);
         std::string msg = recv_msg(sock);
         std::cout << msg << std::endl;
         if (string_tolower(msg) == "exit" || string_tolower(msg) == "quit")
+        {
+            INFO("client", sock, "disconnected...");
             break;
+        }
         send_msg(sock, msg);
     }
     close(sock);
