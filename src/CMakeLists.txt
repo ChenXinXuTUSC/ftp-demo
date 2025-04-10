@@ -7,3 +7,6 @@ file(
 
 add_library(src SHARED ${src_list})
 target_link_libraries(src utils)
+# if your gcc is old version, you may need to link against
+# the thread library by yourself
+#target_link_libraries(src pthread)

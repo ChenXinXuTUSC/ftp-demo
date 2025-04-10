@@ -1,2 +1,8 @@
 /build
 /.vscode
+
+*.bin
+*.exe
+*.out
+*.a
+*.so

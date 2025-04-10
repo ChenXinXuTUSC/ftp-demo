@@ -40,12 +40,11 @@ int main(int argc, char** argv)
     {
         std::cout << "echo >>> ";
         std::cin >> input;
-
-        if (string_tolower(input) == "exit" || string_tolower(input) == "quit")
-            break;
-
         send_msg(sock, input);
         std::cout << recv_msg(sock) << std::endl;
+        
+        if (string_tolower(input) == "exit" || string_tolower(input) == "quit")
+            break;
     }
     
     close(sock);

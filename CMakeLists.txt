@@ -3,7 +3,7 @@ project(ftp-demo)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR}/lib)
@@ -16,6 +16,7 @@ include_directories(include)
 include_directories(include/utils)
 
 add_subdirectory(src)
+add_subdirectory(plugin)
 add_subdirectory(app)
 
 add_subdirectory(test)
