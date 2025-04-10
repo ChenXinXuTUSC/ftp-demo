@@ -16,6 +16,11 @@ public:
     socket_handler(const char* dll_path, const char* symbol_name);
     ~socket_handler();
 
+    bool is_valid() const
+    {
+        return dll_h != nullptr && func_ptr != nullptr;
+    }
+
     int operator()(int sock);
 
 private:

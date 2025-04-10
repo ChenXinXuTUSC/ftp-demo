@@ -3,7 +3,10 @@
 #include "utils/tools.h"
 #include "utils/sendrecv_msg.h"
 
+extern "C"
+{
 
+// 0000000000005012 T echo_server_handler
 void echo_server_handler(int sock)
 {
     while (true)
@@ -21,4 +24,6 @@ void echo_server_handler(int sock)
         }
     }
     close(sock);
+}
+
 }

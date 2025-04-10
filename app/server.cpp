@@ -11,7 +11,7 @@ init __init__; // global object constructor run before main
 int main(int argc, char** argv)
 {
     std::vector<std::thread> workers;
-    gate gg;
+    gate gg; // listening on 9092 by default
 
     gg.start_listen();
     while (true)
@@ -42,8 +42,6 @@ void echo(int sock)
         {
             INFO("client", sock, "disconnected...");
             break;
-        } else {
-            DBUG("not exit branch");
         }
     }
     close(sock);
