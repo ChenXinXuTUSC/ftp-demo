@@ -7,8 +7,9 @@ extern "C"
 {
 
 // 0000000000005012 T echo_server_handler
-void echo_server_handler(int sock)
+int echo_server_handler(int sock)
 {
+    printf("\n");
     while (true)
     {
         printf("echo[%d] >>> ", sock);
@@ -19,11 +20,11 @@ void echo_server_handler(int sock)
         {
             INFO("client", sock, "disconnected...");
             break;
-        } else {
-            DBUG("not exit branch");
         }
     }
     close(sock);
+
+    return 0;
 }
 
 }

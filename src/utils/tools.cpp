@@ -30,12 +30,13 @@ socket_handler::socket_handler(const char* _dp, const char* _sn) :
 
     if (dll_h == nullptr)
         ERRO("failed to load shared library: ", dlerror());
-    
+    // dlopen 和 dlsym 的成功只意味着动态库被成功加载，并且找到了具有指定名称的符号。
+    // 这并不意味着类型匹配。
     func_ptr = (handler_ptr)dlsym(dll_h, symbol_name);
 
     if (func_ptr == nullptr)
     {
-        ERRO("failed to get function address: ", dlerror());
+        ERRO("failed to get symbol address: ", dlerror());
         dlclose(dll_h); // 别忘了卸载共享库
         dll_h = nullptr;
     }
@@ -56,9 +57,9 @@ socket_handler::~socket_handler()
 
 int socket_handler::operator()(int sock)
 {
-    if (func_ptr == nullptr)
+    if (!this->is_valid())
     {
-        ERRO("empty plugin on", dll_path, symbol_name);
+        ERRO("plugin not loaded properly", dll_path, symbol_name);
         throw std::runtime_error("empty plugin");
     }
     

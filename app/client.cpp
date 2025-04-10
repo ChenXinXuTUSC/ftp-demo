@@ -15,13 +15,6 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    socket_handler handler(argv[3], argv[4]);
-    if (!handler.is_valid())
-    {
-        ERRO("failed to load plugin", argv[3], argv[4]);
-        return -2;
-    }
-
     int sock = connect_to_host(argv[1], atoi(argv[2]));
     if (sock < 0)
     {
@@ -29,7 +22,7 @@ int main(int argc, char** argv)
         return -2;
     }
 
-    std::thread thd(handler, sock);
+    std::thread thd(socket_handler(argv[3], argv[4]), sock);
     if (thd.joinable())
         thd.join();
     return 0;

@@ -5,11 +5,17 @@
 
 #include "gate.h"
 
-void echo(int sock);
+// void echo(int sock);
 
 init __init__; // global object constructor run before main
 int main(int argc, char** argv)
 {
+    if (argc < 1 + 2)
+    {
+        fprintf(stderr, "usage: %s <dll_path> <symbol_name>\n", argv[0]);
+        return -1;
+    }
+
     std::vector<std::thread> workers;
     gate gg; // listening on 9092 by default
 
@@ -18,7 +24,7 @@ int main(int argc, char** argv)
     {
         int clnt_sock = gg.pick_conn();
         if (clnt_sock < 0) break;
-        workers.emplace_back(std::thread(echo, clnt_sock));
+        workers.emplace_back(socket_handler(argv[1], argv[2]), clnt_sock);
     }
     gg.stop_listen();
 
@@ -30,19 +36,19 @@ int main(int argc, char** argv)
     return 0;
 }
 
-void echo(int sock)
-{
-    while (true)
-    {
-        printf("echo[%d] >>> ", sock);
-        std::string msg = recv_msg(sock);
-        send_msg(sock, "[server echo] " + msg);
-        std::cout << string_tolower(msg) << std::endl;
-        if (string_tolower(msg) == "exit" || string_tolower(msg) == "quit")
-        {
-            INFO("client", sock, "disconnected...");
-            break;
-        }
-    }
-    close(sock);
-}
+// void echo(int sock)
+// {
+//     while (true)
+//     {
+//         printf("echo[%d] >>> ", sock);
+//         std::string msg = recv_msg(sock);
+//         send_msg(sock, "[server echo] " + msg);
+//         std::cout << string_tolower(msg) << std::endl;
+//         if (string_tolower(msg) == "exit" || string_tolower(msg) == "quit")
+//         {
+//             INFO("client", sock, "disconnected...");
+//             break;
+//         }
+//     }
+//     close(sock);
+// }

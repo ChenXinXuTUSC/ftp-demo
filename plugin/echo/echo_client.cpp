@@ -6,7 +6,7 @@ extern "C"
 {
 
 // 0000000000004c59 T echo_client_handler
-void echo_client_handler(int sock)
+int echo_client_handler(int sock)
 {
     std::string input;
     while (true)
@@ -19,6 +19,9 @@ void echo_client_handler(int sock)
         if (string_tolower(input) == "exit" || string_tolower(input) == "quit")
             break;
     }
+    close(sock);
+
+    return 0;
 }
 
 }

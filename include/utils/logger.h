@@ -22,11 +22,11 @@ enum loglvl
 // 预定义的日志等级颜色
 const std::string lvl_clr_list[] 
 {
+    "\033[35m", // magenta
     "\033[31m", // red
     "\033[33m", // yellow
-    "\033[34m", // blue
     "\033[32m", // green
-    "\033[35m", // magenta
+    "\033[34m", // blue
     "\033[0m",  // none
 };
 const std::string reset_clr = "\033[0m"; // reset color
